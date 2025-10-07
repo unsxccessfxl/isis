@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_NeuroHub" targetNamespace="http://neurohub.example.com/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.6.1">
+  <bpmn:process id="Process_1v031xi">
+    <bpmn:startEvent id="Event_0902tj5" name="Пользователь инициирует поиск нейросети">
+      <bpmn:outgoing>Flow_112ezbr</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_0co2pqh" name="Задать параметры поиска модели">
+      <bpmn:incoming>Flow_112ezbr</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xw8gjt</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_112ezbr" sourceRef="Event_0902tj5" targetRef="Activity_0co2pqh" />
+    <bpmn:task id="Activity_04nua36" name="Выполнить поиск подходящих моделей в каталоге">
+      <bpmn:incoming>Flow_0xw8gjt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m4j69t</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0xw8gjt" sourceRef="Activity_0co2pqh" targetRef="Activity_04nua36" />
+    <bpmn:task id="Activity_1uuu0xu" name="Выбрать одну или несколько моделей для тестирования">
+      <bpmn:incoming>Flow_1m4j69t</bpmn:incoming>
+      <bpmn:incoming>Flow_1rmikt4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fdyp71</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1m4j69t" sourceRef="Activity_04nua36" targetRef="Activity_1uuu0xu" />
+    <bpmn:exclusiveGateway id="Gateway_1ezao5g" name="Модель требует авторизации или оплаты?">
+      <bpmn:incoming>Flow_0fdyp71</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vk3sni</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qlxich</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0fdyp71" sourceRef="Activity_1uuu0xu" targetRef="Gateway_1ezao5g" />
+    <bpmn:task id="Activity_1yhdqj8" name="Пройти аутентификацию и/или оплатить доступ">
+      <bpmn:incoming>Flow_1vk3sni</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rikkdb</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1vk3sni" name="да" sourceRef="Gateway_1ezao5g" targetRef="Activity_1yhdqj8" />
+    <bpmn:task id="Activity_19uymkj" name="Запустить sandbox-среду с выбранной моделью">
+      <bpmn:incoming>Flow_0qlxich</bpmn:incoming>
+      <bpmn:incoming>Flow_0rikkdb</bpmn:incoming>
+      <bpmn:outgoing>Flow_09a7f2x</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0qlxich" sourceRef="Gateway_1ezao5g" targetRef="Activity_19uymkj" />
+    <bpmn:sequenceFlow id="Flow_0rikkdb" sourceRef="Activity_1yhdqj8" targetRef="Activity_19uymkj" />
+    <bpmn:task id="Activity_1vrn1es" name="Отправить тестовые данные и оценить результат">
+      <bpmn:incoming>Flow_09a7f2x</bpmn:incoming>
+      <bpmn:outgoing>Flow_071of35</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_09a7f2x" sourceRef="Activity_19uymkj" targetRef="Activity_1vrn1es" />
+    <bpmn:exclusiveGateway id="Gateway_1pvlg5v" name="Результат устраивает?">
+      <bpmn:incoming>Flow_071of35</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nszisx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1rmikt4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_071of35" sourceRef="Activity_1vrn1es" targetRef="Gateway_1pvlg5v" />
+    <bpmn:task id="Activity_0etudc5" name="Сгенерировать API-ключ или предоставить модель для скачивания">
+      <bpmn:incoming>Flow_0nszisx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m31h0i</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0nszisx" name="да" sourceRef="Gateway_1pvlg5v" targetRef="Activity_0etudc5" />
+    <bpmn:sequenceFlow id="Flow_1rmikt4" sourceRef="Gateway_1pvlg5v" targetRef="Activity_1uuu0xu" />
+    <bpmn:task id="Activity_1vk5n3g" name="Интегрировать модель в своё приложение">
+      <bpmn:incoming>Flow_0m31h0i</bpmn:incoming>
+      <bpmn:outgoing>Flow_0k736tv</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0m31h0i" sourceRef="Activity_0etudc5" targetRef="Activity_1vk5n3g" />
+    <bpmn:endEvent id="Event_1ulo3n7" name="Модель успешно интегрирована">
+      <bpmn:incoming>Flow_0k736tv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0k736tv" sourceRef="Activity_1vk5n3g" targetRef="Event_1ulo3n7" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_NeuroHub">
+    <bpmndi:BPMNPlane id="BPMNPlane_NeuroHub" bpmnElement="Process_1v031xi">
+      <bpmndi:BPMNShape id="Event_0902tj5_di" bpmnElement="Event_0902tj5">
+        <dc:Bounds x="262" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="237" y="82" width="85" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0co2pqh_di" bpmnElement="Activity_0co2pqh">
+        <dc:Bounds x="230" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uuu0xu_di" bpmnElement="Activity_1uuu0xu">
+        <dc:Bounds x="230" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ezao5g_di" bpmnElement="Gateway_1ezao5g" isMarkerVisible="true">
+        <dc:Bounds x="255" y="575" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157.5" y="580" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04nua36_di" bpmnElement="Activity_04nua36">
+        <dc:Bounds x="230" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yhdqj8_di" bpmnElement="Activity_1yhdqj8">
+        <dc:Bounds x="230" y="670" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19uymkj_di" bpmnElement="Activity_19uymkj">
+        <dc:Bounds x="230" y="800" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vrn1es_di" bpmnElement="Activity_1vrn1es">
+        <dc:Bounds x="230" y="930" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1pvlg5v_di" bpmnElement="Gateway_1pvlg5v" isMarkerVisible="true">
+        <dc:Bounds x="255" y="1055" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="181.5" y="1066" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0etudc5_di" bpmnElement="Activity_0etudc5">
+        <dc:Bounds x="230" y="1150" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vk5n3g_di" bpmnElement="Activity_1vk5n3g">
+        <dc:Bounds x="230" y="1280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ulo3n7_di" bpmnElement="Event_1ulo3n7">
+        <dc:Bounds x="262" y="1412" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="237" y="1455" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_112ezbr_di" bpmnElement="Flow_112ezbr">
+        <di:waypoint x="280" y="168" />
+        <di:waypoint x="280" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xw8gjt_di" bpmnElement="Flow_0xw8gjt">
+        <di:waypoint x="280" y="290" />
+        <di:waypoint x="280" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m4j69t_di" bpmnElement="Flow_1m4j69t">
+        <di:waypoint x="280" y="410" />
+        <di:waypoint x="280" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fdyp71_di" bpmnElement="Flow_0fdyp71">
+        <di:waypoint x="280" y="530" />
+        <di:waypoint x="280" y="575" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vk3sni_di" bpmnElement="Flow_1vk3sni">
+        <di:waypoint x="280" y="625" />
+        <di:waypoint x="280" y="670" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="289" y="633" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qlxich_di" bpmnElement="Flow_0qlxich">
+        <di:waypoint x="305" y="600" />
+        <di:waypoint x="400" y="600" />
+        <di:waypoint x="400" y="840" />
+        <di:waypoint x="330" y="840" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rikkdb_di" bpmnElement="Flow_0rikkdb">
+        <di:waypoint x="280" y="750" />
+        <di:waypoint x="280" y="800" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09a7f2x_di" bpmnElement="Flow_09a7f2x">
+        <di:waypoint x="280" y="880" />
+        <di:waypoint x="280" y="930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_071of35_di" bpmnElement="Flow_071of35">
+        <di:waypoint x="280" y="1010" />
+        <di:waypoint x="280" y="1055" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nszisx_di" bpmnElement="Flow_0nszisx">
+        <di:waypoint x="280" y="1105" />
+        <di:waypoint x="280" y="1150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="289" y="1113" width="12" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rmikt4_di" bpmnElement="Flow_1rmikt4">
+        <di:waypoint x="305" y="1080" />
+        <di:waypoint x="460" y="1080" />
+        <di:waypoint x="460" y="490" />
+        <di:waypoint x="330" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m31h0i_di" bpmnElement="Flow_0m31h0i">
+        <di:waypoint x="280" y="1230" />
+        <di:waypoint x="280" y="1280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k736tv_di" bpmnElement="Flow_0k736tv">
+        <di:waypoint x="280" y="1360" />
+        <di:waypoint x="280" y="1412" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
